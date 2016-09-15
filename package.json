@@ -1,0 +1,71 @@
+{
+  "name": "asyncAwait",
+  "version": "1.0.0",
+  "description": "icky",
+  "main": "index.js",
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    },
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-class-properties",
+      "transform-async-to-generator"
+    ]
+  },
+  "scripts": {
+    "start2": "nodemon app.js --exec babel-node",
+    "start": "node dist/index.js",
+    "build:index": "rollup -c rollup.config.index.js",
+    "build:image": "rollup -c rollup.config.image.js",
+    "build:app": "rollup -c rollup.config.app.js",
+    "build": "npm run build:index && npm run build:image && npm run build:app",
+    "image": "babel-watch image.js",
+    "test-only": "./node_modules/.bin/mocha --compilers js:babel-core/register --reporter spec",
+    "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --compilers js:babel-core/register test/*.js"
+  },
+  "nyc": {
+    "include": [
+      "*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-plugin-external-helpers-2": "^6.3.13",
+    "babel-plugin-istanbul": "^2.0.0",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.11.5",
+    "babel-watch": "^2.0.2",
+    "chai": "^3.5.0",
+    "isparta": "^4.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "mocha-istanbul": "^0.3.0",
+    "nodemon": "^1.10.0",
+    "nyc": "^8.1.0",
+    "rollup": "^0.34.13",
+    "rollup-plugin-babel": "^2.6.1"
+  },
+  "dependencies": {
+    "canvas": "^1.4.0",
+    "express": "^4.14.0",
+    "fs-blob-store": "^5.2.1",
+    "htmlparser2": "^3.9.1",
+    "persistent-memoize": "0.0.3",
+    "ramda": "^0.22.1",
+    "request-promise": "^4.0.2"
+  }
+}
