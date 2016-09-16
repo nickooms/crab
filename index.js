@@ -15,7 +15,7 @@ async function drawGebouwen() {
     (await gebouw.get()).draw(svg);
   }*/
   // for (const gebouw of await getGebouwen(2384)) gebouw.draw(svg);
-  (await Gebouw.get(1544288)).draw(svg);
+  (await Gebouw.get(1874906)).draw(svg);
   /* for (let terreinobject of await straat.terreinobjecten()) {
     (await terreinobject.get()).draw(svg);
   }*/

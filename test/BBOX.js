@@ -1,8 +1,7 @@
-import { expect } from 'chai';
 import BBOX from '../BBOX';
 import Point from '../Point';
 import { Point11, Point22 } from './constants';
-import { json } from './util';
+import { json, expect } from './util';
 
 const point11 = new Point(Point11.x, Point11.y);
 const point22 = new Point(Point22.x, Point22.y);

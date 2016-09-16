@@ -1,46 +1,19 @@
-import { expect } from 'chai';
+import { CrabObjecten } from '../CrabObject';
 import { Gemeente } from '../CRAB';
-import { Count, VlaamsGewest as gewest, Stabroek, PostCode2940 } from './constants';
-import { json, isList } from './util';
+import { VlaamsGewest as Gewest, Stabroek as gemeente, PostCode2940 } from './constants';
+import { testObject, expect } from './util';
 
-const { id: gewestId } = gewest;
-const { id, naam } = Stabroek;
-
-const isStabroek = x => {
+const { id, naam } = gemeente;
+const obj = x => {
   expect(x.id).to.equal(id);
   expect(x.naam).to.equal(naam);
 };
+const list = x => expect(x).to.be.an.instanceof(CrabObjecten);
+const OK = `returns Gemeente [${naam}]`;
 
-describe('Gemeente', () => {
-  describe('byGewest()', () => {
-    it(`finds ${Count.gemeenten} gemeenten by ${json({ gewest })}`, async () => {
-      isList(await Gemeente.byGewest(gewest), Count.gemeenten);
-    });
-
-    it(`finds ${Count.gemeenten} gemeenten by ${json({ gewestId })}`, async () => {
-      isList(await Gemeente.byGewest(gewestId), Count.gemeenten);
-    });
-  });
-
-  describe('get()', () => {
-    it(`finds ${naam} by ${json({ id })}`, async () => {
-      isStabroek(await Gemeente.get(id));
-    });
-
-    it(`finds ${naam} by ${json({ Stabroek })}`, async () => {
-      isStabroek(await Gemeente.get(Stabroek));
-    });
-  });
-
-  describe('byPostkanton()', () => {
-    it(`finds ${naam} by ${json({ PostCode2940 })}`, async () => {
-      isStabroek(await Gemeente.byPostkanton(2940));
-    });
-  });
-
-  describe('byNaam()', () => {
-    it(`finds ${naam} by ${json({ naam, gewest })}`, async () => {
-      isStabroek(await Gemeente.byNaam(naam, gewest));
-    });
-  });
+testObject(Gemeente, {
+  get: [obj, OK, [{ Gemeente: gemeente }, { id }]],
+  byNaam: [obj, OK, [{ naam, Gewest }]],
+  byGewest: [list, OK, [{ Gewest }, { gewestId: Gewest.id }]],
+  byPostkanton: [obj, OK, [{ postCode: PostCode2940.id }]],
 });
