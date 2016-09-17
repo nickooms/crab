@@ -25,7 +25,7 @@ const ontext = text => {
   if (rows$1 === undefined) {
     cols.push(text);
   } else {
-    row[cols[index++]] = text === 'NULL' ? null : text;
+    row[cols[index++]] = text; // === 'NULL' ? null : text;
   }
 };
 
@@ -53,6 +53,10 @@ const parse = html => {
 const entries = x => Object.keys(x).map(key => [key, x[key]]);
 
 Object.entries = Object.entries || entries;
+
+const values = x => Object.keys(x).map(key => x[key]);
+
+Object.values = Object.values || values;
 
 var asyncToGenerator = function (fn) {
   return function () {
@@ -83,6 +87,14 @@ var asyncToGenerator = function (fn) {
   };
 };
 
+const URL = 'http://crab.agiv.be/Examples/Home/ExecOperation';
+const method = 'POST';
+const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+
+const parameterMapping = ([Name, Value]) => ({ Name, Value });
+
+const encodeParameters = x => Object.entries(x).map(parameterMapping);
+
 let crabRequest = (() => {
   var _ref = asyncToGenerator(function* (operation, parameters) {
     const parametersJson = JSON.stringify(encodeParameters(parameters));
@@ -96,17 +108,7 @@ let crabRequest = (() => {
   };
 })();
 
-const URL = 'http://crab.agiv.be/Examples/Home/ExecOperation';
-const method = 'POST';
-const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-
-const parameterMapping = ([Name, Value]) => ({ Name, Value });
-
-const encodeParameters = x => Object.entries(x).map(parameterMapping);
-
 memoize(crabRequest);
-
-// import SVGCircle from './SVGCircle';
 
 const log = (...args) => console.log(...args) || [...args];
 

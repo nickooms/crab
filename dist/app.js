@@ -24,7 +24,7 @@ const ontext = text => {
   if (rows === undefined) {
     cols.push(text);
   } else {
-    row[cols[index++]] = text === 'NULL' ? null : text;
+    row[cols[index++]] = text; // === 'NULL' ? null : text;
   }
 };
 
@@ -52,6 +52,10 @@ const parse = html => {
 const entries = x => Object.keys(x).map(key => [key, x[key]]);
 
 Object.entries = Object.entries || entries;
+
+const values = x => Object.keys(x).map(key => x[key]);
+
+Object.values = Object.values || values;
 
 var asyncToGenerator = function (fn) {
   return function () {
@@ -82,6 +86,14 @@ var asyncToGenerator = function (fn) {
   };
 };
 
+const URL = 'http://crab.agiv.be/Examples/Home/ExecOperation';
+const method = 'POST';
+const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+
+const parameterMapping = ([Name, Value]) => ({ Name, Value });
+
+const encodeParameters = x => Object.entries(x).map(parameterMapping);
+
 let crabRequest = (() => {
   var _ref = asyncToGenerator(function* (operation, parameters) {
     const parametersJson = JSON.stringify(encodeParameters(parameters));
@@ -94,14 +106,6 @@ let crabRequest = (() => {
     return _ref.apply(this, arguments);
   };
 })();
-
-const URL = 'http://crab.agiv.be/Examples/Home/ExecOperation';
-const method = 'POST';
-const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-
-const parameterMapping = ([Name, Value]) => ({ Name, Value });
-
-const encodeParameters = x => Object.entries(x).map(parameterMapping);
 
 var crabRequest$1 = memoize(crabRequest);
 
@@ -442,7 +446,7 @@ class Straat extends CrabObject {
     var _this6 = this;
 
     return asyncToGenerator(function* () {
-      return (yield Wegobject.byStraatnaam(_this6.id)).toArray();
+      return (yield Wegobject.byStraat(_this6.id)).toArray();
     })();
   }
 
@@ -450,7 +454,7 @@ class Straat extends CrabObject {
     var _this7 = this;
 
     return asyncToGenerator(function* () {
-      return (yield Wegsegment.byStraatnaam(_this7.id)).toArray();
+      return (yield Wegsegment.byStraat(_this7.id)).toArray();
     })();
   }
 
@@ -467,16 +471,16 @@ class Straat extends CrabObject {
     })();
   }
 
-  terreinobjecten() {
+  terreinen() {
     var _this9 = this;
 
     return asyncToGenerator(function* () {
       const huisnummers = yield _this9.huisnummers();
-      const terreinobjecten = [];
+      const terreinen = [];
       for (const huisnummer of huisnummers) {
-        terreinobjecten.push(...(yield huisnummer.terreinobjecten()).toArray());
+        terreinen.push(...(yield huisnummer.terreinen()).toArray());
       }
-      return terreinobjecten;
+      return terreinen;
     })();
   }
 }
@@ -544,11 +548,11 @@ class Huisnummer extends CrabObject {
     })();
   }
 
-  terreinobjecten() {
+  terreinen() {
     var _this5 = this;
 
     return asyncToGenerator(function* () {
-      return yield Terreinobject.byHuisnummer(_this5.id);
+      return yield Terrein.byHuisnummer(_this5.id);
     })();
   }
 }
@@ -570,6 +574,42 @@ Huisnummer.getMap = x => ({
 Huisnummer.result = x => new Huisnummers(x.map(Huisnummer.new).map(toEntry));
 
 Huisnummer.getResult = x => x.map(Huisnummer.object)[0];
+
+const strokeLineCap = 'stroke-linecap="round"';
+const strokeDashArray = 'stroke-dasharray="5, 5"';
+
+class SVGLine {
+  constructor(points) {
+    this.points = points;
+  }
+
+  toSVG(style = 'fill: none; stroke: purple; stroke-width: 1;') {
+    const points = this.points.map(({ x, y }) => [x, y].join(',')).join(' ');
+    return `<polyline ${ strokeLineCap } ${ strokeDashArray } points="${ points }" style="${ style }" />`;
+  }
+}
+
+class SVGRect {
+  constructor({ x, y, width, height }) {
+    Object.assign(this, { x, y, width, height });
+  }
+
+  toSVG(style = 'stroke: red; fill: none;') {
+    const { x, y, width, height } = this;
+    return `<rect x="${ x }" y="${ y }" width="${ width }" height="${ height }" style="${ style }" />`;
+  }
+}
+
+class SVGCircle {
+  constructor(point) {
+    this.point = point;
+  }
+
+  toSVG(style = 'fill: green;') {
+    const { x, y } = this.point;
+    return `<circle cx="${ x }" cy="${ y }" r="0.5" style="${ style }" />`;
+  }
+}
 
 class SVGPolygon {
   constructor(points) {
@@ -690,35 +730,13 @@ Gebouw.result = x => new Gebouwen(x.map(Gebouw.new).map(toEntry));
 
 Gebouw.getResult = x => x.map(Gebouw.object)[0];
 
-class SVGCircle {
-  constructor(point) {
-    this.point = point;
-  }
-
-  toSVG(style = 'fill: green;') {
-    const { x, y } = this.point;
-    return `<circle cx="${ x }" cy="${ y }" r="0.5" style="${ style }" />`;
-  }
-}
-
-class SVGRect {
-  constructor({ x, y, width, height }) {
-    Object.assign(this, { x, y, width, height });
-  }
-
-  toSVG(style = 'stroke: red; fill: none;') {
-    const { x, y, width, height } = this;
-    return `<rect x="${ x }" y="${ y }" width="${ width }" height="${ height }" style="${ style }" />`;
-  }
-}
-
 const NAME$5 = 'Terreinobject';
 const NAMES$6 = `${ NAME$5 }en`;
 const ID$6 = `Identificator${ NAME$5 }`;
 
-class Terreinobjecten extends CrabObjecten {}
+class Terreinen extends CrabObjecten {}
 
-class Terreinobject extends CrabObject {
+class Terrein extends CrabObject {
   constructor(...args) {
     var _temp;
 
@@ -742,12 +760,12 @@ class Terreinobject extends CrabObject {
     })();
   }
 
-  static get(terreinobject) {
+  static get(terrein) {
     var _this2 = this;
 
     return asyncToGenerator(function* () {
       const operation = `Get${ NAME$5 }By${ ID$6 }`;
-      const IdentificatorTerreinobject = Terreinobject.id(terreinobject);
+      const IdentificatorTerreinobject = Terrein.id(terrein);
       return _this2.getResult((yield _this2.crab(operation, { IdentificatorTerreinobject })));
     })();
   }
@@ -756,31 +774,31 @@ class Terreinobject extends CrabObject {
     var _this3 = this;
 
     return asyncToGenerator(function* () {
-      return yield Terreinobject.get(_this3);
+      return yield Terrein.get(_this3);
     })();
   }
 
 }
 
-Terreinobject.new = x => new Terreinobject(x);
+Terrein.new = x => new Terrein(x);
 
-Terreinobject.object = x => Object.assign(Terreinobject.new(x), Terreinobject.getMap(x));
+Terrein.object = x => Object.assign(Terrein.new(x), Terrein.getMap(x));
 
-Terreinobject.map = x => ({
+Terrein.map = x => ({
   id: x[ID$6],
   aard: +x[`Aard${ NAME$5 }`]
 });
 
-Terreinobject.getMap = x => ({
+Terrein.getMap = x => ({
   center: new Point([x.CenterX, x.CenterY]),
   min: new Point([x.MinimumX, x.MinimumY]),
   max: new Point([x.MaximumX, x.MaximumY]),
   begin: begin(x)
 });
 
-Terreinobject.result = x => new Terreinobjecten(x.map(Terreinobject.new).map(toEntry));
+Terrein.result = x => new Terreinen(x.map(Terrein.new).map(toEntry));
 
-Terreinobject.getResult = x => x.map(Terreinobject.object)[0];
+Terrein.getResult = x => x.map(Terrein.object)[0];
 
 class Wegobjecten extends Map {
   constructor(...args) {
@@ -805,12 +823,12 @@ class Wegobject extends CrabObject {
     }, _temp2;
   }
 
-  static byStraatnaam(straatnaam) {
+  static byStraat(straat) {
     var _this = this;
 
     return asyncToGenerator(function* () {
       const operation = 'ListWegobjectenByStraatnaamId';
-      const StraatnaamId = Straat.id(straatnaam);
+      const StraatnaamId = Straat.id(straat);
       return _this.result((yield _this.crab(operation, { StraatnaamId, SorteerVeld })));
     })();
   }
@@ -855,20 +873,6 @@ Wegobject.result = x => new Wegobjecten(x.map(Wegobject.new).map(toEntry));
 
 Wegobject.getResult = x => x.map(Wegobject.object)[0];
 
-const strokeLineCap = 'stroke-linecap="round"';
-const strokeDashArray = 'stroke-dasharray="5, 5"';
-
-class SVGLine {
-  constructor(points) {
-    this.points = points;
-  }
-
-  toSVG(style = 'fill: none; stroke: purple; stroke-width: 1;') {
-    const points = this.points.map(({ x, y }) => [x, y].join(',')).join(' ');
-    return `<polyline ${ strokeLineCap } ${ strokeDashArray } points="${ points }" style="${ style }" />`;
-  }
-}
-
 const RE$1 = /LINESTRING \(|\)/g;
 
 const coord$1 = x => new Point(x.split(' ').map(parseFloat));
@@ -878,9 +882,6 @@ const coord$1 = x => new Point(x.split(' ').map(parseFloat));
 class LineString {}
 
 LineString.of = x => x.replace(RE$1, '').split(', ').map(coord$1);
-
-// import SVGCircle from './SVGCircle';
-// import Point from './Point';
 
 const NAME$6 = 'Wegsegment';
 const NAMES$7 = `${ NAME$6 }en`;
@@ -904,12 +905,12 @@ class Wegsegment extends CrabObject {
     }, _temp;
   }
 
-  static byStraatnaam(straatnaam) {
+  static byStraat(straat) {
     var _this = this;
 
     return asyncToGenerator(function* () {
       const operation = `List${ NAMES$7 }ByStraatnaamId`;
-      const StraatnaamId = Straat.id(straatnaam);
+      const StraatnaamId = Straat.id(straat);
       return _this.result((yield _this.crab(operation, { StraatnaamId, SorteerVeld })));
     })();
   }

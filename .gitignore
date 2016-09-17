@@ -35,3 +35,10 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+svg.html
+color-map.html
+cache
+dist
+dist/app.js
+dist/index.js
+dist/app.js
