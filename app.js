@@ -191,7 +191,7 @@ async function listGebouwen(req, res) {
   res.send(html([head(title('Gebouwen')), body([
     a(`${path}/..`, 'Huisnummer'),
     h1('Gebouwen'),
-    table(['id', 'gebouw'], gebouwen, path),
+    table(['id', 'aard', 'status'], gebouwen, path),
   ])]));
 }
 
