@@ -1,4 +1,4 @@
-import { Taal, Gewest, Gemeente, Straat, Huisnummer, log } from './CRAB';
+import { Taal, Gewest, Gemeente, Straat, Huisnummer, Gebouw, log } from './CRAB';
 import express from 'express';
 import './Object.entries';
 
@@ -184,6 +184,17 @@ async function showHuisnummer(req, res) {
   ])]));
 }
 
+async function listGebouwen(req, res) {
+  const { taal, gewest, gemeente, straat, huisnummer } = ids(req);
+  const gebouwen = (await Gebouw.byHuisnummer(huisnummer)).toArray();
+  const path = `${getPath({ taal, gewest, gemeente, straat, huisnummer })}/Gebouwen`;
+  res.send(html([head(title('Gebouwen')), body([
+    a(`${path}/..`, 'Huisnummer'),
+    h1('Gebouwen'),
+    table(['id', 'gebouw'], gebouwen, path),
+  ])]));
+}
+
 app.get('/', (req, res) => res.send(ul(li(plural, x => `<a href="${x}">${x}</a>`))));
 app.get('/Talen', (req, res) => listTalen(req, res).catch(log));
 app.get(getForm('Talen'), (req, res) => showTaal(req, res).catch(log));
@@ -209,6 +220,9 @@ app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten'),
 );
 app.get('/Talen/:taalId/Gewesten/:gewestId/Gemeenten/:gemeenteId/Straten/:straatId/Huisnummers',
   (req, res) => listHuisnummers(req, res).catch(log)
+);
+app.get('/Talen/:taalId/Gewesten/:gewestId/Gemeenten/:gemeenteId/Straten/:straatId/Huisnummers/:huisnummerId/Gebouwen',
+  (req, res) => listGebouwen(req, res).catch(log)
 );
 app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten', 'Huisnummers'),
   (req, res) => showHuisnummer(req, res).catch(log)
