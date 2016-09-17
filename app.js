@@ -195,6 +195,17 @@ async function listGebouwen(req, res) {
   ])]));
 }
 
+async function showGebouw(req, res) {
+  const { taal, gewest, gemeente, straat, huisnummer, gebouw } = ids(req);
+  const object = (await Gebouw.byHuisnummer(huisnummer)).get(gebouw);
+  const path = getPath({ taal, gewest, gemeente, straat, huisnummer, gebouw });
+  res.send(html([head(title('Gebouw')), body([
+    a(`${path}/..`, 'Gebouwen'),
+    h1('Gebouw'),
+    form(['id', 'aard', 'status'], object, path),
+  ])]));
+}
+
 app.get('/', (req, res) => res.send(ul(li(plural, x => `<a href="${x}">${x}</a>`))));
 app.get('/Talen', (req, res) => listTalen(req, res).catch(log));
 app.get(getForm('Talen'), (req, res) => showTaal(req, res).catch(log));
@@ -221,11 +232,14 @@ app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten'),
 app.get('/Talen/:taalId/Gewesten/:gewestId/Gemeenten/:gemeenteId/Straten/:straatId/Huisnummers',
   (req, res) => listHuisnummers(req, res).catch(log)
 );
+app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten', 'Huisnummers'),
+  (req, res) => showHuisnummer(req, res).catch(log)
+);
 app.get('/Talen/:taalId/Gewesten/:gewestId/Gemeenten/:gemeenteId/Straten/:straatId/Huisnummers/:huisnummerId/Gebouwen',
   (req, res) => listGebouwen(req, res).catch(log)
 );
-app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten', 'Huisnummers'),
-  (req, res) => showHuisnummer(req, res).catch(log)
+app.get(getForm('Talen', 'Gewesten', 'Gemeenten', 'Straten', 'Huisnummers', 'Gebouwen'),
+  (req, res) => showGebouw(req, res).catch(log)
 );
 
 app.listen(PORT, () => log(`CRAB app listening on port ${PORT}!`));
