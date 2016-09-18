@@ -48,6 +48,10 @@ export default class Wegsegment extends CrabObject {
     return await Wegsegment.get(this);
   }
 
+  async straten() {
+    return await Straat.byWegsegment(this);
+  }
+
   draw = svg => {
     const { geometrie } = this;
     // console.log(this);

@@ -30,6 +30,10 @@ export default class Gewest extends CrabObject {
     return { id: this.id, naam: this.talen.get(taalId).naam };
   }
 
+  get naam() {
+    return this.talen.get('nl').naam;
+  }
+
   static async list() {
     const x = await this.crab(`List${NAMES}`, { SorteerVeld });
     const grouped = Gewest.group(x);

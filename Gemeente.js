@@ -36,11 +36,13 @@ export default class Gemeente extends CrabObject {
     taal: x.TaalCode,
     taal2: x.TaalCodeTweedeTaal,
     nisId: +x[`NIS${NAME}Code`],
+    gewest: +x.GewestId,
   });
 
   static object = x => Object.assign(Gemeente.new(x), Gemeente.getMap(x));
 
   static getMap = x => ({
+    nisId: +x[`Nis${NAME}Code`],
     center: new Point(x.CenterX, x.CenterY),
     min: new Point(x.MinimumX, x.MinimumY),
     max: new Point(x.MaximumX, x.MaximumY),
@@ -52,7 +54,8 @@ export default class Gemeente extends CrabObject {
 
   static group = x => groupBy(x, Groups, 'talen');
 
-  static result = x => new Gemeenten(Gemeente.group(x).map(Gemeente.new).map(toEntry));
+  // static result = x => new Gemeenten(Gemeente.group(x).map(Gemeente.new).map(toEntry));
+  static result = x => new Gemeenten(x.map(Gemeente.new).map(toEntry));
 
   static getResult = x => x.map(Gemeente.object)[0];
 

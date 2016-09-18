@@ -27,16 +27,22 @@ export default class Huisnummer extends CrabObject {
 
   static getResult = x => x.map(Huisnummer.object)[0];
 
+  static async get(huisnummer) {
+    const operation = `Get${NAME}By${ID}`;
+    const HuisnummerId = Huisnummer.id(huisnummer);
+    return this.getResult(await this.crab(operation, { HuisnummerId }));
+  }
+
   static async byStraatnaam(straatnaam) {
     const operation = `List${NAMES}ByStraatnaamId`;
     const StraatnaamId = Straat.id(straatnaam);
     return this.result(await this.crab(operation, { StraatnaamId, SorteerVeld }));
   }
 
-  static async get(huisnummer) {
-    const operation = `Get${NAME}By${ID}`;
-    const HuisnummerId = Huisnummer.id(huisnummer);
-    return this.getResult(await this.crab(operation, { HuisnummerId }));
+  static async byGebouw(gebouw) {
+    const operation = `List${NAMES}WithStatusByIdentificatorGebouw`;
+    const IdentificatorGebouw = Gebouw.id(gebouw);
+    return this.result(await this.crab(operation, { IdentificatorGebouw, SorteerVeld }));
   }
 
   async get() {

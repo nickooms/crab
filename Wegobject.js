@@ -45,6 +45,10 @@ export default class Wegobject extends CrabObject {
     return await Wegobject.get(this);
   }
 
+  async straten() {
+    return await Straat.byWegobject(this);
+  }
+
   draw = svg => {
     const { min, max, center } = this;
     const points = [min, max, center];

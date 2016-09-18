@@ -31,20 +31,24 @@ export default class Gebouw extends CrabObject {
 
   static getResult = x => x.map(Gebouw.object)[0];
 
-  static async byHuisnummer(huisnummer) {
-    const operation = `List${NAMES}ByHuisnummerId`;
-    const HuisnummerId = Huisnummer.id(huisnummer);
-    return this.result(await this.crab(operation, { HuisnummerId, SorteerVeld }));
-  }
-
   static async get(gebouw) {
     const operation = `Get${NAME}By${ID}`;
     const IdentificatorGebouw = Gebouw.id(gebouw);
     return this.getResult(await this.crab(operation, { IdentificatorGebouw }));
   }
 
+  static async byHuisnummer(huisnummer) {
+    const operation = `List${NAMES}ByHuisnummerId`;
+    const HuisnummerId = Huisnummer.id(huisnummer);
+    return this.result(await this.crab(operation, { HuisnummerId, SorteerVeld }));
+  }
+
   async get() {
     return await Gebouw.get(this);
+  }
+
+  async huisnummers() {
+    return await Huisnummer.byGebouw(this);
   }
 
   draw = svg => {

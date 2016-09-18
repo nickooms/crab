@@ -20,6 +20,7 @@ export default class Straat extends CrabObject {
     taalCode: x.TaalCode,
     taalCode2deTaal: x.TaalCodeTweedeTaal,
     label: x[`${NAME}Label`],
+    gemeente: x.GemeenteId,
   });
 
   static getMap = x => ({ begin: begin(x) });
@@ -27,6 +28,11 @@ export default class Straat extends CrabObject {
   static result = x => new Straten(x.map(Straat.new).map(toEntry));
 
   static getResult = x => x.map(Straat.object)[0];
+
+  static async get(straat) {
+    const StraatnaamId = this.id(straat);
+    return this.getResult(await this.crab(`Get${NAME}By${ID}`, { StraatnaamId }));
+  }
 
   static async byGemeente(gemeente) {
     const GemeenteId = Gemeente.id(gemeente);
@@ -38,9 +44,16 @@ export default class Straat extends CrabObject {
     return this.result(await this.crab(`Find${NAMES}`, { Straatnaam, GemeenteId, SorteerVeld }));
   }
 
-  static async get(straat) {
-    const StraatnaamId = this.id(straat);
-    return this.getResult(await this.crab(`Get${NAME}By${ID}`, { StraatnaamId }));
+  static async byWegobject(wegobject) {
+    const operation = `List${NAMES}ByIdentificatorWegobject`;
+    const IdentificatorWegobject = Wegobject.id(wegobject);
+    return this.result(await this.crab(operation, { IdentificatorWegobject, SorteerVeld }));
+  }
+
+  static async byWegsegment(wegsegment) {
+    const operation = `List${NAMES}WithStatusByIdentificatorWegsegment`;
+    const IdentificatorWegsegment = Wegsegment.id(wegsegment);
+    return this.result(await this.crab(operation, { IdentificatorWegsegment, SorteerVeld }));
   }
 
   static async getByNaam(Straatnaam, gemeente) {
