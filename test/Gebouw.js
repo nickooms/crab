@@ -19,6 +19,10 @@ testObject(Gebouw, {
 
 describe('gebouw.', () => {
   describe('get()', () => it(`${OK} details`, async () => obj(await (await get(id)).get())));
+  describe('huisnummers()', () => it('returns Huisnummer [${Huisnummer.naam}]', async () => {
+    const huisnummers = (await (await get(id)).huisnummers()).toArray();
+    expect(huisnummers.length).to.equal(1);
+  }));
   describe('draw(SVG)', () => it('draws SVGPolygon', async () => {
     const svg = new SVG();
     await (await get(id)).draw(svg);

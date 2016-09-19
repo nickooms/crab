@@ -19,6 +19,10 @@ testObject(Wegsegment, {
 
 describe('wegsegment.', () => {
   describe('get()', () => it(`${OK} details`, async () => obj(await(await get(id)).get())));
+  describe('straten()', () => it('returns Straat [${Straat.naam}]', async () => {
+    const straten = (await (await get(id)).straten()).toArray();
+    expect(straten.length).to.equal(1);
+  }));
   describe('draw(SVG)', () => it('draws SVGLine', async () => {
     const svg = new SVG();
     await(await get(id)).draw(svg);

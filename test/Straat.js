@@ -1,7 +1,12 @@
 import mocha from 'mocha';
 import { expect } from 'chai';
 import { Straat } from '../CRAB';
-import { Count, Stabroek as Gemeente, Markt } from './constants';
+import {
+  Count, Markt,
+  Stabroek as Gemeente,
+  MarktWegobject as Wegobject,
+  MarktWegsegment as Wegsegment,
+} from './constants';
 import { isArray, testObject } from './util';
 
 const { huisnummers, wegobjecten, wegsegmenten, gebouwen, terreinen } = Count;
@@ -25,6 +30,8 @@ testObject(Straat, {
   get: [obj, OK, [{ Straat: Markt }, { id }]],
   byNaam: [hasSize(1), OK, [{ naam, Gemeente }, { naam, gemeenteId }]],
   byGemeente: [hasSize(154), OK, [{ Gemeente }, { id: gemeenteId }]],
+  byWegobject: [hasSize(1), OK, [{ Wegobject }, { id: Wegobject.id }]],
+  byWegsegment: [hasSize(1), OK, [{ Wegsegment }, { id: Wegsegment.id }]],
   getByNaam: [obj, OK, [{ naam, Gemeente }, { naam, gemeenteId }]],
 });
 describe('straat.', () => {

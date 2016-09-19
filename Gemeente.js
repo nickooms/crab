@@ -52,7 +52,7 @@ export default class Gemeente extends CrabObject {
     return taal(x, taalId);
   }*/
 
-  static group = x => groupBy(x, Groups, 'talen');
+  // static group = x => groupBy(x, Groups, 'talen');
 
   // static result = x => new Gemeenten(Gemeente.group(x).map(Gemeente.new).map(toEntry));
   static result = x => new Gemeenten(x.map(Gemeente.new).map(toEntry));
