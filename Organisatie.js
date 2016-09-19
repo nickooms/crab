@@ -21,3 +21,5 @@ export default class Organisatie extends CrabObject {
     return new Organisaties(x.map(Organisatie.new).map(toEntry));
   }
 }
+
+Object.assign(Organisatie, { ID, NAME, NAMES });

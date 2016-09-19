@@ -32,7 +32,7 @@ export default class Terrein extends CrabObject {
   static getResult = x => x.map(Terrein.object)[0];
 
   static async byHuisnummer(huisnummer) {
-    const operation = `List${NAMES}ByHuisnummerId`;
+    const operation = `List${NAMES}By${Huisnummer.ID}`;
     const HuisnummerId = Huisnummer.id(huisnummer);
     return this.result(await this.crab(operation, { HuisnummerId, SorteerVeld }));
   }
@@ -51,8 +51,9 @@ export default class Terrein extends CrabObject {
     const { min, max, center } = this;
     const points = [min, max, center];
     svg.bbox.add(points);
-    // points.map(point => new SVGCircle(point)).forEach(circle => svg.add(circle));
     svg.add(new SVGRect({ x: min.x, y: min.y, width: max.x - min.x, height: max.y - min.y }));
     svg.add(new SVGCircle(center));
   }
 }
+
+Object.assign(Terrein, { ID, NAME, NAMES });

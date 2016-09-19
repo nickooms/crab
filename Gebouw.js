@@ -38,7 +38,7 @@ export default class Gebouw extends CrabObject {
   }
 
   static async byHuisnummer(huisnummer) {
-    const operation = `List${NAMES}ByHuisnummerId`;
+    const operation = `List${NAMES}By${Huisnummer.ID}`;
     const HuisnummerId = Huisnummer.id(huisnummer);
     return this.result(await this.crab(operation, { HuisnummerId, SorteerVeld }));
   }
@@ -59,5 +59,7 @@ export default class Gebouw extends CrabObject {
 }
 
 const get = async x => await Gebouw.get(x);
+
+Object.assign(Gebouw, { ID, NAME, NAMES });
 
 export { get };

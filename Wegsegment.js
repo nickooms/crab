@@ -22,9 +22,6 @@ export default class Wegsegment extends CrabObject {
 
   static getMap = x => ({
     geometrie: LineString.of(x.Geometrie),
-    /* center: new Point([x.CenterX, x.CenterY]),
-    min: new Point([x.MinimumX, x.MinimumY]),
-    max: new Point([x.MaximumX, x.MaximumY]),*/
     begin: begin(x),
   });
 
@@ -33,7 +30,7 @@ export default class Wegsegment extends CrabObject {
   static getResult = x => x.map(Wegsegment.object)[0];
 
   static async byStraat(straat) {
-    const operation = `List${NAMES}ByStraatnaamId`;
+    const operation = `List${NAMES}By${Straat.ID}`;
     const StraatnaamId = Straat.id(straat);
     return this.result(await this.crab(operation, { StraatnaamId, SorteerVeld }));
   }
@@ -54,12 +51,9 @@ export default class Wegsegment extends CrabObject {
 
   draw = svg => {
     const { geometrie } = this;
-    // console.log(this);
-    // const { min, max, center } = this;
-    // const points = [min, max, center];
     svg.bbox.add(geometrie);
-    // points.map(point => new SVGCircle(point)).forEach(circle => svg.add(circle));
-    // svg.add(new SVGRect({ x: min.x, y: min.y, width: max.x - min.x, height: max.y - min.y }));
     svg.add(new SVGLine(geometrie));
   }
 }
+
+Object.assign(Wegsegment, { ID, NAME, NAMES });

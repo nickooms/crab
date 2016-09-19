@@ -26,10 +26,6 @@ export default class Gewest extends CrabObject {
 
   static group = x => groupBy(x, [ID], 'talen');
 
-  /* taal(taalId) {
-    return { id: this.id, naam: this.talen.get(taalId).naam };
-  }*/
-
   get naam() {
     return this.talen.get('nl').naam;
   }
@@ -48,3 +44,5 @@ export default class Gewest extends CrabObject {
     return gewesten.get(id);
   }
 }
+
+Object.assign(Gewest, { ID, NAME, NAMES });

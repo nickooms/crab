@@ -19,7 +19,7 @@ export default class Huisnummer extends CrabObject {
   });
 
   static getMap = x => ({
-    straat: +x.StraatnaamId,
+    straat: +x[Straat.ID],
     begin: begin(x),
   });
 
@@ -34,13 +34,13 @@ export default class Huisnummer extends CrabObject {
   }
 
   static async byStraatnaam(straatnaam) {
-    const operation = `List${NAMES}ByStraatnaamId`;
+    const operation = `List${NAMES}By${Straat.ID}`;
     const StraatnaamId = Straat.id(straatnaam);
     return this.result(await this.crab(operation, { StraatnaamId, SorteerVeld }));
   }
 
   static async byGebouw(gebouw) {
-    const operation = `List${NAMES}WithStatusByIdentificatorGebouw`;
+    const operation = `List${NAMES}WithStatusBy${Gebouw.ID}`;
     const IdentificatorGebouw = Gebouw.id(gebouw);
     return this.result(await this.crab(operation, { IdentificatorGebouw, SorteerVeld }));
   }
@@ -57,3 +57,5 @@ export default class Huisnummer extends CrabObject {
     return await Terrein.byHuisnummer(this.id);
   }
 }
+
+Object.assign(Huisnummer, { ID, NAME, NAMES });

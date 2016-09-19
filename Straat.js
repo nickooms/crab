@@ -20,7 +20,7 @@ export default class Straat extends CrabObject {
     taalCode: x.TaalCode,
     taalCode2deTaal: x.TaalCodeTweedeTaal,
     label: x[`${NAME}Label`],
-    gemeente: x.GemeenteId,
+    gemeente: x[Gemeente.ID],
   });
 
   static getMap = x => ({ begin: begin(x) });
@@ -30,35 +30,39 @@ export default class Straat extends CrabObject {
   static getResult = x => x.map(Straat.object)[0];
 
   static async get(straat) {
+    const operation = `Get${NAME}By${ID}`;
     const StraatnaamId = this.id(straat);
-    return this.getResult(await this.crab(`Get${NAME}By${ID}`, { StraatnaamId }));
+    return this.getResult(await this.crab(operation, { StraatnaamId }));
   }
 
   static async byGemeente(gemeente) {
+    const operation = `List${NAMES}By${Gemeente.ID}`;
     const GemeenteId = Gemeente.id(gemeente);
-    return this.result(await this.crab(`List${NAMES}ByGemeenteId`, { GemeenteId, SorteerVeld }));
+    return this.result(await this.crab(operation, { GemeenteId, SorteerVeld }));
   }
 
   static async byNaam(Straatnaam, gemeente) {
+    const operation = `Find${NAMES}`;
     const GemeenteId = Gemeente.id(gemeente);
-    return this.result(await this.crab(`Find${NAMES}`, { Straatnaam, GemeenteId, SorteerVeld }));
+    return this.result(await this.crab(operation, { Straatnaam, GemeenteId, SorteerVeld }));
   }
 
   static async byWegobject(wegobject) {
-    const operation = `List${NAMES}ByIdentificatorWegobject`;
+    const operation = `List${NAMES}By${Wegobject.ID}`;
     const IdentificatorWegobject = Wegobject.id(wegobject);
     return this.result(await this.crab(operation, { IdentificatorWegobject, SorteerVeld }));
   }
 
   static async byWegsegment(wegsegment) {
-    const operation = `List${NAMES}WithStatusByIdentificatorWegsegment`;
+    const operation = `List${NAMES}WithStatusBy${Wegsegment.ID}`;
     const IdentificatorWegsegment = Wegsegment.id(wegsegment);
     return this.result(await this.crab(operation, { IdentificatorWegsegment, SorteerVeld }));
   }
 
   static async getByNaam(Straatnaam, gemeente) {
+    const operation = `Get${NAME}By${NAME}`;
     const GemeenteId = Gemeente.id(gemeente);
-    return this.getResult(await this.crab(`Get${NAME}By${NAME}`, { Straatnaam, GemeenteId }));
+    return this.getResult(await this.crab(operation, { Straatnaam, GemeenteId }));
   }
 
   async huisnummers() {
@@ -91,3 +95,5 @@ export default class Straat extends CrabObject {
     return terreinen;
   }
 }
+
+Object.assign(Straat, { ID, NAME, NAMES });

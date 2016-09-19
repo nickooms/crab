@@ -1,7 +1,8 @@
 import CrabObject, { CrabObjecten, toEntry } from './CrabObject';
 import { SorteerVeld } from './constants';
 
-const NAMES = 'Bewerkingen';
+const NAME = 'Bewerking';
+const NAMES = `${NAME}en`;
 const ID = 'Code';
 
 class Bewerkingen extends CrabObjecten {}
@@ -20,3 +21,5 @@ export default class Bewerking extends CrabObject {
     return new Bewerkingen(x.map(Bewerking.new).map(toEntry));
   }
 }
+
+Object.assign(Bewerking, { ID, NAME, NAMES });
