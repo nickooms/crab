@@ -2,10 +2,12 @@ import {
   Taal, Gewest, Gemeente, Straat, Huisnummer,
   Gebouw, Wegobject, Wegsegment, log,
 } from './CRAB';
+import SVG from './SVG';
 import express from 'express';
 import './Object.entries';
 
 const PORT = 80;
+const SVGStyle = 'svg { transform-origin: 50% 50%; transform: scale(1,-1); }';
 
 const app = express();
 
@@ -39,6 +41,7 @@ const ids = req => Object.entries(req.params).map(([name, value]) => ({
 
 const html = tag('html');
 const head = tag('head');
+const style = tag('style');
 const title = tag('title');
 const body = tag('body');
 const h1 = tag('h1');
@@ -255,14 +258,21 @@ async function listGebouwen(req, res) {
 }
 
 async function showGebouw(req, res) {
-  const { gebouw } = ids(req);
-  const object = await Gebouw.get(gebouw);
-  const huisnummers = (await object.huisnummers()).toArray();
-  const path = getPath({ gebouw });
-  res.send(html([head(title('Gebouw')), body([
+  const { gebouw: id } = ids(req);
+  const gebouw = await Gebouw.get(id);
+  const svg = new SVG();
+  gebouw.draw(svg);
+  svg.bbox.grow();
+  svg.viewBox = svg.bbox.viewBox;
+  // console.log(svg.children[0].toSVG());
+  // console.log(svg.toSVG());
+  const huisnummers = (await gebouw.huisnummers()).toArray();
+  const path = getPath({ gebouw: id });
+  res.send(html([head([title('Gebouw'), style(SVGStyle)]), body([
     div(huisnummers.map(x => a(getPath({ huisnummer: x.id }), `Huisnummer ${x.huisnummer}`))),
     h1('Gebouw'),
-    form(['id', 'aard', 'status'], object, path),
+    form(['id', 'aard', 'status'], gebouw, path),
+    div([svg.toSVG()]),
   ])]));
 }
 
