@@ -1,3 +1,4 @@
+import mocha from 'mocha';
 import { Terrein } from '../CRAB';
 import SVG, { SVGRect } from '../SVG';
 import { Count, Markt19 as Huisnummer, Markt19Terrein as terrein } from './constants';
@@ -11,6 +12,8 @@ const obj = x => {
 };
 const list = (x, count = 1) => obj(isList(x, count)[0]);
 const OK = `returns Terrein [${naam}]`;
+
+mocha.timeout = 5000;
 
 testObject(Terrein, {
   get: [obj, OK, [{ Terrein: terrein }, { id }]],
