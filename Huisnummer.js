@@ -33,9 +33,9 @@ export default class Huisnummer extends CrabObject {
     return this.getResult(await this.crab(operation, { HuisnummerId }));
   }
 
-  static async byStraatnaam(straatnaam) {
+  static async byStraat(straat) {
     const operation = `List${NAMES}By${Straat.ID}`;
-    const StraatnaamId = Straat.id(straatnaam);
+    const StraatnaamId = Straat.id(straat);
     return this.result(await this.crab(operation, { StraatnaamId, SorteerVeld }));
   }
 

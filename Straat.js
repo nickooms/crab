@@ -66,7 +66,7 @@ export default class Straat extends CrabObject {
   }
 
   async huisnummers() {
-    return (await Huisnummer.byStraatnaam(this.id)).toArray();
+    return (await Huisnummer.byStraat(this.id)).toArray();
   }
 
   async wegobjecten() {

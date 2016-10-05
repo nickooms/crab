@@ -14,7 +14,7 @@ const OK = `returns Huisnummer [${naam}]`;
 
 testObject(Huisnummer, {
   get: [obj, OK, [{ Huisnummer: huisnummer }, { id }]],
-  byStraatnaam: [list, OK, [{ Straat }, { id: Straat.id }]],
+  byStraat: [list, OK, [{ Straat }, { id: Straat.id }]],
 });
 
 describe('huisnummer.', () => {
